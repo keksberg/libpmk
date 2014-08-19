@@ -33,6 +33,7 @@ void KMeansClusterer::DoClustering(const vector<const Point*>& data) {
   if (num_clusters_ >= num_points) {
     int jj = 0;
 
+    #pragma omp critical
     for (int ii = 0; ii < num_points; ++ii) {
       cluster_centers_->add_point(*(data[ii]));
       membership_[jj] = jj;
@@ -65,6 +66,7 @@ void KMeansClusterer::DoClustering(const vector<const Point*>& data) {
 
   // Now that we have a bunch of random indices that are not dupes,
   // populate the cluster_centers_ with the actual points.
+  #pragma omp critical
   for (int ii = 0; ii < (int)random_indices.size(); ++ii) {
     int random_index = random_indices[ii];
     cluster_centers_->add_point(*(data[random_index]));

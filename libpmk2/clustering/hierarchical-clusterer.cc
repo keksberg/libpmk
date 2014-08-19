@@ -140,6 +140,7 @@ RecursiveCluster(int level, const vector<int>& indices, int num_levels,
 
   // Add the new nodes under <parent> that we just created from the
   // clustering.
+  #pragma omp critical
   for (int ii = 0; ii < clusterer->centers_size(); ++ii) {
     PointTreeNode* added = centers_.add_node();
     added->set_point(local_centers.point(ii));
