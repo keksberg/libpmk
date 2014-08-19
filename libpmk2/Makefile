@@ -1,7 +1,7 @@
 CC = g++
 LD = ld
 NUM_CORES=$(shell getconf _NPROCESSORS_CONF)
-CFLAGS = -Wall -Wno-deprecated -O3 -ffast-math -fopenmp -ftree-parallelize-loops=$(NUM_CORES)
+CFLAGS = -Wall -Wundef -pedantic -O3 -ffast-math -fopenmp -ftree-parallelize-loops=$(NUM_CORES) -std=c++11
 LDFLAGS = -lm
 LIBPMK_NAME = libpmk.o
 LIBPMK_UTIL_NAME = libpmk_util.o

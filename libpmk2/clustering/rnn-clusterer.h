@@ -9,7 +9,7 @@
 #ifndef CLUSTERING_RNN_CLUSTERER_H
 #define CLUSTERING_RNN_CLUSTERER_H
 
-#include <ext/hash_set>
+#include <unordered_set>
 #include <vector>
 
 #include "clustering/clusterer.h"
@@ -53,9 +53,9 @@ private:
   L2DistanceComputer euclidean_distance_computer_;
 
   struct NNGroup {
-    hash_set<int> point_indices_;
-    auto_ptr<Point> center_;
-    auto_ptr<Point> variance_;
+    unordered_set<int> point_indices_;
+    shared_ptr<Point> center_;
+    shared_ptr<Point> variance_;
 
     // This maintains the sum of all entries in variance_.
     double variance_sum_;
@@ -72,7 +72,7 @@ private:
   // requires us to provide a cluster ID for each input point, we'll
   // keep these around, and simply assign these points to the nearest
   // cluster center after the agglomeration is finished.
-  hash_set<int> discarded_indices_;
+  unordered_set<int> discarded_indices_;
 
   void clear();
 

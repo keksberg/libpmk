@@ -10,7 +10,7 @@
 
 #include <list>
 #include <stack>
-#include <ext/hash_map>
+#include <unordered_map>
 #include "tree/tree-node.h"
 
 using namespace std;
@@ -256,7 +256,7 @@ public:
   };
 
 private:
-  hash_map<int, T*> tree_;
+  unordered_map<int, T*> tree_;
   int last_used_id_;
 
   // Block the copy assignment operator

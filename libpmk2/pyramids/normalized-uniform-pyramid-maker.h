@@ -35,7 +35,7 @@ namespace libpmk {
  */
 class NormalizedUniformPyramidMaker : public PyramidMaker {
 public:
-  const static double TOP_LEVEL_BIN_SIZE = 10000;
+  constexpr static double TOP_LEVEL_BIN_SIZE = 10000;
 
   NormalizedUniformPyramidMaker(int num_levels);
 

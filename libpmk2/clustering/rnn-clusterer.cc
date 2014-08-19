@@ -6,7 +6,7 @@
 //
 
 #include <cfloat>
-#include <ext/hash_set>
+#include <unordered_set>
 
 #include "clustering/rnn-clusterer.h"
 
@@ -148,7 +148,7 @@ void RNNClusterer::PerformAgglomeration() {
         // used later. They are saved into discarded_indices_.
         for (int jj = 0; jj < (int)current_chain_.size(); ++jj) {
           const NNGroup* group = current_chain_[jj];
-          for (hash_set<int>::iterator iter = group->point_indices_.begin();
+          for (unordered_set<int>::const_iterator iter = group->point_indices_.begin();
                iter != group->point_indices_.end(); ++iter) {
             discarded_indices_.insert(*iter);
           }
@@ -177,7 +177,7 @@ void RNNClusterer::ReportClusters() {
   for (int ii = 0; ii < (int)current_chain_.size(); ++ii) {
     const NNGroup* group = current_chain_[ii];
     cluster_centers_->add_point(*(group->center_.get()));
-    for (hash_set<int>::iterator iter = group->point_indices_.begin();
+    for (unordered_set<int>::const_iterator iter = group->point_indices_.begin();
          iter != group->point_indices_.end(); ++iter) {
       membership_[*iter] = ii;
     }
@@ -191,7 +191,7 @@ void RNNClusterer::PerformAssignment(const vector<PointRef>& data) {
 
   // Experiment: for all discarded points, create a new cluster for
   // each of them.
-  for (hash_set<int>::iterator iter = discarded_indices_.begin();
+  for (unordered_set<int>::iterator iter = discarded_indices_.begin();
        iter != discarded_indices_.end(); ++iter) {
     cluster_centers_->add_point(data[*iter].point());
     membership_[*iter] = cluster_centers_->size() - 1;
@@ -200,7 +200,7 @@ void RNNClusterer::PerformAssignment(const vector<PointRef>& data) {
 
   // For all of the points we discarded in the previous
   // step, we will simply assign them to the nearest cluster center.
-//   for (hash_set<int>::iterator iter = discarded_indices_.begin();
+//   for (unordered_set<int>::iterator iter = discarded_indices_.begin();
 //        iter != discarded_indices_.end(); ++iter) {
 //     const Point& discarded_point(data[*iter].point());
 
@@ -230,7 +230,7 @@ void RNNClusterer::PerformAssignment(const vector<const Point*>& data) {
 
   // For all of the points we discarded in the previous step, we
   // will simply assign them to the nearest cluster center.
-  for (hash_set<int>::iterator iter = discarded_indices_.begin();
+  for (unordered_set<int>::iterator iter = discarded_indices_.begin();
        iter != discarded_indices_.end(); ++iter) {
     const Point& discarded_point(*(data[*iter]));
 
@@ -291,7 +291,7 @@ void RNNClusterer::MergeGroups(NNGroup* first, NNGroup* second) {
   int second_size = (int)second->point_indices_.size();
 
   // Put the point indices from <second> into <first>:
-  for (hash_set<int>::iterator iter = second->point_indices_.begin();
+  for (unordered_set<int>::iterator iter = second->point_indices_.begin();
        iter != second->point_indices_.end(); ++iter) {
     first->point_indices_.insert(*iter);
   }

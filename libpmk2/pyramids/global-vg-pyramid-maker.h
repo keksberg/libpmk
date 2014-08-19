@@ -11,7 +11,7 @@
 #include <vector>
 #include <iostream>
 #include <set>
-#include <ext/hash_map>
+#include <unordered_map>
 
 #include "clustering/hierarchical-clusterer.h"
 #include "histograms/multi-resolution-histogram.h"
@@ -103,9 +103,9 @@ private:
   // GlobalVGPyramidMaker does not have to be the same as the data
   // used to cluster. Thus, there could be some nodes in the tree
   // which own no points. Those nodes simply do not show up in this
-  // hash_map. (having an entry with size=0 is allowable; this is
+  // unordered_map. (having an entry with size=0 is allowable; this is
   // the case for a node with 1 point in it).
-  hash_map<int, double> node_sizes_;
+  unordered_map<int, double> node_sizes_;
 
   bool preprocessed_;
 };

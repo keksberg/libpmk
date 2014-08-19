@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <list>
 #include <stack>
-#include <ext/hash_map>
+#include <unordered_map>
 #include "tree/tree.h"
 #include "tree/tree-node.h"
 #include "util/sparse-vector.h"
@@ -45,7 +45,7 @@ Tree<T>::Tree(const Tree<T>& other) :
   end_postorder_(PostorderIterator(TreeNode::kInvalidNodeID, this)),
   end_breadth_first_(BreadthFirstIterator(TreeNode::kInvalidNodeID, this)) {
   tree_.clear();
-  for (typename hash_map<int, T*>::const_iterator iter = other.tree_.begin();
+  for (typename unordered_map<int, T*>::const_iterator iter = other.tree_.begin();
        iter != other.tree_.end(); ++iter) {
     tree_[iter->first] = new T(*(iter->second));
   }
@@ -55,7 +55,7 @@ Tree<T>::Tree(const Tree<T>& other) :
 
 template <class T>
 T* Tree<T>::node(int id) {
-  typename hash_map<int, T*>::iterator iter = tree_.find(id);
+  typename unordered_map<int, T*>::iterator iter = tree_.find(id);
   if (iter == tree_.end()) {
     return NULL;
   }
@@ -65,7 +65,7 @@ T* Tree<T>::node(int id) {
 
 template <class T>
 const T* Tree<T>::node(int id) const {
-  typename hash_map<int, T*>::const_iterator iter = tree_.find(id);
+  typename unordered_map<int, T*>::const_iterator iter = tree_.find(id);
   if (iter == tree_.end()) {
     return NULL;
   }
@@ -75,7 +75,7 @@ const T* Tree<T>::node(int id) const {
 
 template <class T>
 void Tree<T>::clear() {
-  for (typename hash_map<int, T*>::iterator iter = tree_.begin();
+  for (typename unordered_map<int, T*>::iterator iter = tree_.begin();
        iter != tree_.end(); ++iter) {
     delete iter->second;
   }
@@ -127,7 +127,7 @@ void Tree<T>::DeleteNode(int node_id) {
     // Delete all of the selected nodes.
     for (list<int>::iterator iter = ids_to_delete.begin();
          iter != ids_to_delete.end(); ++iter) {
-      typename hash_map<int, T*>::iterator finger = tree_.find(*iter);
+      typename unordered_map<int, T*>::iterator finger = tree_.find(*iter);
       delete finger->second;
       tree_.erase(finger);
     }
@@ -163,7 +163,7 @@ T* Tree<T>::add_node(const T& new_node) {
     // do; it will usually be better to let Tree assign IDs. This is
     // usually only used by Tree::ReadFromStream() which assumes that
     // the structure is already present in the tree.
-    typename hash_map<int, T*>::iterator iter = tree_.find(new_node.id());
+    typename unordered_map<int, T*>::iterator iter = tree_.find(new_node.id());
     if (iter == tree_.end()) {
       // Update the last_used_id_ to make sure that it always reflects
       // the highest number.
@@ -190,7 +190,7 @@ void Tree<T>::WriteToStream(ostream& output_stream) const {
   int32_t num_nodes = size();
   output_stream.write((char *)&num_nodes, sizeof(int32_t));
 
-  for (typename hash_map<int, T*>::const_iterator iter = tree_.begin();
+  for (typename unordered_map<int, T*>::const_iterator iter = tree_.begin();
        iter != tree_.end(); ++iter) {
     (iter->second)->WriteToStream(output_stream);
   }

@@ -8,7 +8,7 @@
 #include <cfloat>
 #include <vector>
 #include <fstream>
-#include <ext/hash_set>
+#include <unordered_map>
 
 #include "pyramids/global-vg-pyramid-maker.h"
 
@@ -36,7 +36,7 @@ void GlobalVGPyramidMaker::Preprocess(const PointSetList& point_sets) {
 
   // Records, for each node in the cluster tree, the set of all
   // PointRef indices that the node owns.
-  hash_map<int, list<int>* > inverted_tree;
+  unordered_map<int, list<int>* > inverted_tree;
 
   for (int ii = 0; ii < (int)all_points.size(); ++ii) {
     // We explicitly use VGPyramidMaker::GetMembershipPath because it
@@ -55,7 +55,7 @@ void GlobalVGPyramidMaker::Preprocess(const PointSetList& point_sets) {
     int node_id = 0;
     const PointTreeNode* node = centers_.node(node_id);
 
-    hash_map<int, list<int>* >::iterator iter = inverted_tree.find(node_id);
+    unordered_map<int, list<int>* >::iterator iter = inverted_tree.find(node_id);
     // If we've never put a point in this cluster before, create an entry:
     if (iter == inverted_tree.end()) {
       inverted_tree[node_id] = new list<int>(1, ii);
@@ -69,7 +69,7 @@ void GlobalVGPyramidMaker::Preprocess(const PointSetList& point_sets) {
       int child_index = membership_path[jj];
       node = centers_.node(node->child(child_index));
 
-      hash_map<int, list<int>* >::iterator iter =
+      unordered_map<int, list<int>* >::iterator iter =
         inverted_tree.find(node_id);
       // If we've never put a point in this cluster before, create an entry:
       if (iter == inverted_tree.end()) {
@@ -91,7 +91,7 @@ void GlobalVGPyramidMaker::Preprocess(const PointSetList& point_sets) {
   // TODO(jjl): Faster way to do this incrementally? If we start from
   // the leaves...
 
-  for (hash_map<int, list<int>* >::iterator iter = inverted_tree.begin();
+  for (unordered_map<int, list<int>* >::iterator iter = inverted_tree.begin();
        iter != inverted_tree.end(); ++iter) {
     // Find the max pairwise distance.
     double max_size = 0;
@@ -193,7 +193,7 @@ void GlobalVGPyramidMaker::WriteToStream(ostream& output_stream) const {
   assert(preprocessed_);
   int32_t node_info_size = node_sizes_.size();
   output_stream.write((char *)&node_info_size, sizeof(int32_t));
-  for (hash_map<int, double>::const_iterator iter = node_sizes_.begin();
+  for (unordered_map<int, double>::const_iterator iter = node_sizes_.begin();
        iter != node_sizes_.end(); ++iter) {
     int32_t node_id = iter->first;
     double node_size = iter->second;
@@ -238,7 +238,7 @@ bool GlobalVGPyramidMaker::GetMembershipPath(const Point& f,
 
       // Was any point ever assigned to this node? If so, then we'll
       // consider it. If not, do not bother checking.
-      hash_map<int, double>::iterator iter = node_sizes_.find(child->id());
+      unordered_map<int, double>::iterator iter = node_sizes_.find(child->id());
       if (iter != node_sizes_.end()) {
         double distance =
           distance_computer_.ComputeDistance(f, child->point(), min_distance);
