@@ -99,6 +99,7 @@ void KMeansClusterer::DoClustering(const vector<const Point*>& data) {
 
 
 void KMeansClusterer::ComputeMembership(const vector<const Point*>& data) {
+  #pragma omp parallel for
   for (int ii = 0; ii < (int)data.size(); ++ii) {
     int best = 0;
 
@@ -137,6 +138,7 @@ bool KMeansClusterer::ComputeMeans(const vector<const Point*>& data) {
   // values belonging to any single cluster and place them in
   // new_clusters. Later on, we'll divide these values by the counts,
   // resulting in the mean, which may become the new cluster center.
+  #pragma omp parallel for
   for (int ii = 0; ii < (int)data.size(); ++ii) {
     ++counts[membership_[ii]];
 
@@ -161,6 +163,7 @@ bool KMeansClusterer::ComputeMeans(const vector<const Point*>& data) {
     } else {
       // This is where we divide by the counts, resulting in the average.
       Point* new_cluster = new_clusters.mutable_point(ii);
+      #pragma omp parallel for
       for (int jj = 0; jj < new_clusters.point_dim(); ++jj) {
         new_cluster->set_feature(jj, (new_cluster->feature(jj) /
                                       static_cast<double>(counts[ii])));
@@ -272,6 +275,7 @@ void KMeansClusterer::DoClustering(const vector<PointRef>& data) {
 
 
 void KMeansClusterer::ComputeMembership(const vector<PointRef>& data) {
+  #pragma omp parallel for
   for (int ii = 0; ii < (int)data.size(); ++ii) {
     int best = 0;
 
@@ -310,6 +314,7 @@ bool KMeansClusterer::ComputeMeans(const vector<PointRef>& data) {
   // values belonging to any single cluster and place them in
   // new_clusters. Later on, we'll divide these values by the counts,
   // resulting in the mean, which may become the new cluster center.
+  #pragma omp parallel for
   for (int ii = 0; ii < (int)data.size(); ++ii) {
     ++counts[membership_[ii]];
 
@@ -334,6 +339,7 @@ bool KMeansClusterer::ComputeMeans(const vector<PointRef>& data) {
     } else {
       // This is where we divide by the counts, resulting in the average.
       Point* new_cluster = new_clusters.mutable_point(ii);
+      #pragma omp parallel for
       for (int jj = 0; jj < new_clusters.point_dim(); ++jj) {
         new_cluster->set_feature(jj, (new_cluster->feature(jj) /
                                       static_cast<double>(counts[ii])));

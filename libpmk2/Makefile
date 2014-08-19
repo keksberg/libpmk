@@ -1,6 +1,7 @@
 CC = g++
 LD = ld
-CFLAGS = -Wall -Wno-deprecated -O3
+NUM_CORES=$(shell getconf _NPROCESSORS_CONF)
+CFLAGS = -Wall -Wno-deprecated -O3 -ffast-math -fopenmp -ftree-parallelize-loops=$(NUM_CORES)
 LDFLAGS = -lm
 LIBPMK_NAME = libpmk.o
 LIBPMK_UTIL_NAME = libpmk_util.o
@@ -144,6 +145,7 @@ diag: $(ALLOBJS) $(DIAGNOSTIC)
 
 library: libpmk libpmk_util
 	ar rcs libpmk.a libpmk.o libpmk_util.o
+	@echo Built for $(NUM_CORES) cores.
 
 .cc.o:
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
