@@ -142,6 +142,9 @@ tests: $(ALLOBJS) $(UNITTESTS)
 tools: $(ALLOBJS) $(TOOLS)
 diag: $(ALLOBJS) $(DIAGNOSTIC)
 
+library: libpmk libpmk_util
+	ar rcs libpmk.a libpmk.o libpmk_util.o
+
 .cc.o:
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
@@ -157,6 +160,7 @@ clean:
 	rm -f $(TOOLS)
 	rm -f $(LIBPMK_NAME) $(LIBPMK_UTIL_NAME)
 	rm -f $(DIAGNOSTIC)
+	rm -f libpmk.a
 
 reallyclean: clean
 	rm -f histograms/*~ point_set/*~ util/*~ pyramids/*~ kernel/*~ *~
