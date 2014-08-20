@@ -140,7 +140,6 @@ RecursiveCluster(int level, const vector<int>& indices, int num_levels,
 
   // Add the new nodes under <parent> that we just created from the
   // clustering.
-  #pragma omp critical
   for (int ii = 0; ii < clusterer->centers_size(); ++ii) {
     PointTreeNode* added = centers_.add_node();
     added->set_point(local_centers.point(ii));
@@ -165,7 +164,6 @@ RecursiveCluster(int level, const vector<int>& indices, int num_levels,
   // Only bother continuing to cluster lower levels if we need to.
   if (level < num_levels - 1) {
     // For each cluster returned:
-    #pragma omp parallel for schedule(dynamic)
     for (int ii = 0; ii < branch_factor; ++ii) {
       // Create a new list of indices, which contain only points
       // that belong to this cluster.
